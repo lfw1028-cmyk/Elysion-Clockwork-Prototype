@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Elysion Clockwork 垂直切片 v2.5.2 — BGM2立繪工坊・6單元序數引力・漫畫沙盤</title>
+<style>
+  :root {
+    --bg-0: #090b10;
+    --bg-1: #11151f;
+    --bg-2: #181e2c;
+    --bg-3: #222a3d;
+    --brass: #d4af37;
+    --brass-dim: #8a6f1d;
+    --cyan: #38bdf8;
+    --crimson: #f43f5e;
+    --emerald: #10b981;
+    --violet: #a855f7;
+    --amber: #f59e0b;
+    --text-0: #f1f5f9;
+    --text-1: #cbd5e1;
+    --text-2: #64748b;
+    --border: #2e3852;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-0);
+    color: var(--text-0);
+    font-family: "Segoe UI", "PingFang HK", "Microsoft JhengHei", monospace;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  /* Top Header Bar */
+  .topbar {
+    height: 46px;
+    background: linear-gradient(180deg, #161b28 0%, #0d1018 100%);
+    border-bottom: 1px solid var(--brass-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    color: var(--brass);
+  }
+  .version-pill {
+    background: rgba(56, 189, 248, 0.14);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    font-size: 11px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 700;
+  }
+  .top-actions {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+  .btn {
+    background: var(--bg-2);
+    color: var(--text-0);
+    border: 1px solid var(--border);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.12s;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .btn:hover { border-color: var(--brass); color: var(--brass); }
+  .btn.active {
+    background: rgba(212, 175, 55, 0.18);
+    border-color: var(--brass);
+    color: var(--brass);
+  }
+  .btn-dispatch {
+    background: linear-gradient(135deg, #b91c1c 0%, #7f1d1d 100%);
+    border: 1px solid #f87171;
+    color: #fff;
+    font-weight: 800;
+  }
+  .btn-dispatch:hover {
+    background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+    color: #fff;
+    border-color: #fca5a5;
+  }
+
+  /* Main View Containers */
+  .view-panel {
+    flex: 1;
+    display: none;
+    overflow: hidden;
+  }
+  .view-panel.active {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ==================== VIEW 1: TACTICIAN'S DESK ==================== */
+  .desk-container {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .mandate-box {
+    background: linear-gradient(180deg, #171c2b 0%, #101420 100%);
+    border: 1px solid var(--brass-dim);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .mandate-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .mandate-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--brass);
+  }
+  .int-pool-badge {
+    background: rgba(56, 189, 248, 0.12);
+    border: 1px solid var(--cyan);
+    color: var(--cyan);
+    padding: 3px 9px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .mandate-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 8px;
+  }
+  .mandate-plate {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--brass);
+    border-radius: 4px;
+    padding: 6px 8px;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .mandate-plate select {
+    background: var(--bg-0);
+    color: var(--text-0);
+    border: 1px solid var(--border);
+    padding: 2px 4px;
+    font-size: 11px;
+    border-radius: 3px;
+  }
+
+  /* 6-Unit Party Grid on Desk */
+  .party-desk-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 10px;
+  }
+  .unit-desk-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: relative;
+  }
+  .unit-desk-card.drag-over {
+    border: 2px dashed var(--cyan);
+    background: rgba(56, 189, 248, 0.08);
+  }
+  .unit-desk-top {
+    display: flex;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  /* BGM2 3:4 Portrait Frame on Desk */
+  .bgm2-desk-portrait {
+    width: 88px;
+    height: 118px;
+    border-radius: 5px;
+    border: 1px solid var(--brass-dim);
+    background-color: #0b0e17;
+    background-image: var(--portrait-url);
+    background-repeat: no-repeat;
+    background-size: calc(var(--focal-zoom, 1) * 115%) auto;
+    background-position: var(--focal-x, 50%) var(--focal-y, 24%);
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: inset 0 0 12px rgba(0,0,0,0.8);
+  }
+  .bgm2-desk-portrait::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: var(--focal-y, 24%);
+    height: 1px;
+    background: rgba(56, 189, 248, 0.45);
+    pointer-events: none;
+  }
+  .bgm2-portrait-badge {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(9, 11, 16, 0.86);
+    color: var(--cyan);
+    font-size: 10px;
+    text-align: center;
+    padding: 3px 2px;
+    font-weight: 700;
+    border-top: 1px solid rgba(56, 189, 248, 0.3);
+  }
+  .bgm2-desk-portrait:hover .bgm2-portrait-badge {
+    background: var(--cyan);
+    color: #000;
+  }
+  .slot-order-pill {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    background: rgba(0,0,0,0.82);
+    border: 1px solid var(--brass);
+    color: var(--brass);
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .unit-meta {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 11px;
+  }
+  .unit-name-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+  }
+  .unit-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--brass);
+  }
+  .ordinal-btns {
+    display: flex;
+    gap: 3px;
+  }
+  .mini-btn {
+    background: var(--bg-2);
+    color: var(--text-1);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 6px;
+    font-size: 10px;
+    cursor: pointer;
+  }
+  .mini-btn:hover { border-color: var(--cyan); color: var(--cyan); }
+  .stat-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    color: var(--text-1);
+    font-size: 10px;
+  }
+  .stat-pill {
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* Skeuomorphic Vertical Gambit Rack */
+  .gambit-rack-frame {
+    background: #0b0e16;
+    border: 1px solid #353f59;
+    border-left: 5px solid var(--brass-dim);
+    border-radius: 4px;
+    padding: 6px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .rack-header {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-2);
+    margin-bottom: 2px;
+  }
+  .gambit-plate {
+    background: linear-gradient(90deg, #1b2234 0%, #141927 100%);
+    border: 1px solid #384463;
+    border-radius: 3px;
+    padding: 4px 6px;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .gambit-plate.artifact-seal {
+    background: linear-gradient(90deg, #2d1b2e 0%, #1c1322 100%);
+    border-color: var(--violet);
+  }
+  .gambit-plate.intuition-clip {
+    border-left: 3px solid var(--cyan);
+  }
+  .plate-row-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4px;
+  }
+  .plate-sockets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    align-items: center;
+    font-size: 10px;
+  }
+  .socket-tag {
+    background: var(--bg-0);
+    border: 1px solid var(--border);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .socket-when { border-color: var(--cyan); color: var(--cyan); }
+  .socket-and { border-color: var(--amber); color: var(--amber); }
+  .socket-do { border-color: var(--crimson); color: #fda4af; }
+
+  /* ==================== VIEW 2: SPLIT-SCREEN MANGA DIORAMA & LOG ==================== */
+  /* Top 35% Viewport: 1x6 vs 1x6 Side-View Tactical Diorama */
+  .diorama-viewport {
+    height: 36%;
+    min-height: 225px;
+    background: radial-gradient(circle at 50% 60%, #1a2236 0%, #090c14 85%);
+    border-bottom: 2px solid var(--brass-dim);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 6px 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .diorama-hud-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11px;
+    z-index: 5;
+  }
+  .diorama-stage {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 26px 1fr;
+    gap: 6px;
+    align-items: center;
+    position: relative;
+    z-index: 2;
+  }
+  .side-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 5px;
+    height: 100%;
+    align-items: center;
+  }
+  .clash-center-pillar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 92%;
+    background: rgba(244, 63, 94, 0.14);
+    border: 1px solid var(--crimson);
+    border-radius: 4px;
+    color: #fda4af;
+    font-size: 10px;
+    font-weight: 800;
+    writing-mode: vertical-rl;
+    letter-spacing: 2px;
+  }
+
+  /* Per-Slot Composite Card (Bone + Flesh) */
+  .diorama-slot-card {
+    background: rgba(15, 19, 30, 0.92);
+    border: 1px solid #334155;
+    border-radius: 5px;
+    height: 162px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3px;
+    position: relative;
+    transition: border-color 0.05s;
+  }
+  .diorama-slot-card.active-actor {
+    border: 2px solid var(--cyan);
+    box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+  }
+  .diorama-slot-card.active-target {
+    border: 2px solid var(--crimson);
+    box-shadow: 0 0 12px rgba(244, 63, 94, 0.5);
+  }
+  .diorama-slot-card.bleeding-out-slot {
+    border-color: #881337;
+    opacity: 0.84;
+  }
+  .slot-header-strip {
+    display: flex;
+    justify-content: space-between;
+    font-size: 9px;
+    color: var(--text-1);
+    padding: 0 2px;
+  }
+  .uplink-badge {
+    color: var(--cyan);
+    font-weight: 700;
+  }
+  .uplink-severed {
+    color: var(--crimson);
+    font-weight: 700;
+  }
+
+  /* Diorama Bone Portrait Frame (Auto-cropped via --focal-x / --focal-y + CSS Shaders) */
+  .diorama-bone-portrait {
+    flex: 1;
+    border-radius: 3px;
+    background-color: #090b10;
+    background-image: var(--portrait-url);
+    background-repeat: no-repeat;
+    background-size: calc(var(--focal-zoom, 1) * 145%) auto;
+    background-position: var(--focal-x, 50%) var(--focal-y, 24%);
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #263044;
+    margin: 2px 0;
+  }
+  /* Reactive CSS Shaders (Pillar 4 & 30) */
+  .diorama-bone-portrait.shader-mana-glow {
+    box-shadow: inset 0 0 12px rgba(56, 189, 248, 0.65);
+    border-color: var(--cyan);
+  }
+  .diorama-bone-portrait.shader-exhausted {
+    filter: saturate(0.35) contrast(1.12);
+  }
+  .diorama-bone-portrait.shader-bleeding {
+    filter: sepia(0.85) hue-rotate(-50deg) saturate(2.5) contrast(1.2);
+    box-shadow: inset 0 0 16px rgba(244, 63, 94, 0.85);
+  }
+  .diorama-bone-portrait.shader-frenzy {
+    box-shadow: inset 0 0 15px rgba(168, 85, 247, 0.85);
+    border-color: var(--violet);
+  }
+  .bone-name-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(5, 7, 12, 0.95));
+    font-size: 10px;
+    font-weight: 700;
+    padding: 8px 3px 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .status-pill-overlay {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    background: rgba(244, 63, 94, 0.9);
+    color: #fff;
+    font-size: 8px;
+    font-weight: 800;
+    padding: 1px 4px;
+    border-radius: 3px;
+  }
+
+  /* Micro Bars for Bone & Flesh */
+  .micro-bar-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .micro-bar {
+    height: 4px;
+    background: #090c12;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .fill-hp { background: var(--emerald); height: 100%; }
+  .fill-stm { background: var(--amber); height: 100%; }
+  .fill-flesh { background: #94a3b8; height: 100%; }
+
+  .flesh-chassis-box {
+    background: #121724;
+    border: 1px solid #29344d;
+    border-radius: 3px;
+    padding: 2px 3px;
+    font-size: 8.5px;
+    color: var(--text-1);
+    margin-top: 2px;
+  }
+  .flesh-row {
+    display: flex;
+    justify-content: space-between;
+    white-space: nowrap;
+  }
+
+  /* SVG Targeting Vector Overlay */
+  .diorama-svg-overlay {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 4;
+  }
+
+  /* LIFO Depth >= 2 Diagonal Manga Eye-Line Cut-In Overlay */
+  .lifo-cutin-overlay {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) rotate(-3deg);
+    width: 68%;
+    max-width: 780px;
+    height: 86px;
+    background: #05070c;
+    border-top: 3px solid var(--cyan);
+    border-bottom: 3px solid var(--crimson);
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.92);
+    clip-path: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%);
+    z-index: 8;
+    display: none;
+    align-items: center;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .lifo-cutin-overlay.visible {
+    display: flex;
+  }
+  /* Auto-Sliced Eye-Line Strip from the SAME Single Image (2.1x Zoom onto focal-x / focal-y) */
+  .lifo-eyeline-art {
+    width: 52%;
+    height: 100%;
+    background-color: #0b0f19;
+    background-image: var(--cutin-url);
+    background-repeat: no-repeat;
+    background-size: calc(var(--cutin-zoom, 1) * 230%) auto;
+    background-position: var(--cutin-x, 50%) var(--cutin-y, 24%);
+    border-right: 3px solid var(--brass);
+    position: relative;
+  }
+  .lifo-eyeline-art::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -18deg,
+      transparent 0px,
+      transparent 10px,
+      rgba(56, 189, 248, 0.12) 11px,
+      transparent 13px
+    );
+  }
+  .lifo-cutin-caption {
+    flex: 1;
+    padding: 8px 14px;
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.96) 0%, rgba(88, 28, 135, 0.85) 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 3px;
+  }
+  .lifo-tag {
+    font-size: 10px;
+    font-weight: 900;
+    color: var(--cyan);
+    letter-spacing: 1px;
+  }
+  .lifo-main-text {
+    font-size: 14px;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 2px 6px #000;
+  }
+
+  /* Bottom 65% Viewport — Layout A (65% Scrubbable Log | 35% Live Enemy Forensics) */
+  .bottom-split-viewport {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 65% 35%;
+    overflow: hidden;
+  }
+  .log-column {
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    overflow: hidden;
+    position: relative;
+  }
+  .subbar {
+    height: 30px;
+    background: var(--bg-1);
+    border-bottom: 1px solid var(--border);
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-1);
+    flex-shrink: 0;
+  }
+  .log-scroll-wrap {
+    flex: 1;
+     display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+  .log-stream {
+    flex: 1;
+    overflow-y: auto;
+    padding: 6px 24px 16px 8px;
+    font-size: 11.5px;
+  }
+
+  /* Macro Log Row & 1-Line Expandable Battle Summary Row */
+  .log-macro-row {
+    padding: 6px 8px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background: var(--bg-1);
+    border-left: 3px solid var(--brass);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .log-macro-row:hover {
+    background: var(--bg-2);
+  }
+  .log-battle-summary {
+    padding: 7px 10px;
+    margin-bottom: 4px;
+    border-radius: 4px;
+    background: linear-gradient(90deg, #1b2236 0%, #121726 100%);
+    border: 1px solid #38466b;
+    border-left: 4px solid var(--crimson);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+  }
+  .log-battle-summary:hover {
+    border-color: var(--cyan);
+  }
+  .battle-steps-container {
+    display: none;
+    margin: 2px 0 8px 12px;
+    padding-left: 8px;
+    border-left: 2px solid #2e3b59;
+  }
+  .battle-steps-container.expanded {
+    display: block;
+  }
+  .log-micro-line {
+    padding: 3px 6px;
+    border-radius: 3px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    color: var(--text-1);
+  }
+  .log-micro-line:hover, .log-micro-line.scrub-active {
+    background: rgba(56, 189, 248, 0.16);
+    color: #fff;
+  }
+  .log-micro-line.lifo-line {
+    border-left: 3px solid var(--cyan);
+    background: rgba(56, 189, 248, 0.07);
+  }
+  .log-micro-line.gravity-line {
+    border-left: 3px solid var(--amber);
+    background: rgba(245, 158, 11, 0.08);
+    color: #fde68a;
+  }
+
+  /* Right-Edge Inflection Bookmark Rail */
+  .bookmark-rail {
+    width: 16px;
+    background: #0b0e17;
+    border-left: 1px solid var(--border);
+    position: relative;
+    flex-shrink: 0;
+  }
+  .bookmark-tick {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    height: 4px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .tick-lifo { background: var(--cyan); }
+  .tick-gravity { background: var(--amber); }
+  .tick-bleed { background: var(--crimson); }
+  .tick-mandate { background: var(--brass); }
+
+  /* Right 35%: Live Enemy Forensics Gambit Rack */
+  .forensics-column {
+    display: flex;
+    flex-direction: column;
+    background: #0d111b;
+    overflow: hidden;
+  }
+  .forensics-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .forensic-enemy-card {
+    background: var(--bg-1);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 7px;
+    font-size: 11px;
+  }
+
+  /* ==================== OPTION A: BGM2 FRAMING & 2D EYE-LINE MODAL ==================== */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(4, 6, 12, 0.85);
+    z-index: 50;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .modal-backdrop.open {
+    display: flex;
+  }
+  .bgm2-modal {
+    background: var(--bg-1);
+    border: 1px solid var(--brass);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 780px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+  }
+  .bgm2-modal-body {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 14px;
+  }
+  .calibrator-stage {
+    width: 260px;
+    height: 340px;
+    background-color: #07090f;
+    background-image: var(--calib-url);
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
+    border: 1px solid var(--cyan);
+    border-radius: 6px;
+    position: relative;
+    cursor: crosshair;
+    overflow: hidden;
+  }
+  .eyeline-band {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 28px;
+    transform: translateY(-50%);
+    background: rgba(56, 189, 248, 0.18);
+    border-top: 1px dashed var(--cyan);
+    border-bottom: 1px dashed var(--cyan);
+    pointer-events: none;
+  }
+  .eyeline-crosshair {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    transform: translate(-50%, -50%);
+    border: 2px solid var(--cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--cyan);
+    pointer-events: none;
+  }
+  .eyeline-crosshair::before, .eyeline-crosshair::after {
+    content: "";
+    position: absolute;
+    background: var(--cyan);
+  }
+  .eyeline-crosshair::before { left: 8px; top: -6px; bottom: -6px; width: 2px; }
+  .eyeline-crosshair::after { top: 8px; left: -6px; right: -6px; height: 2px; }
+
+  .preview-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .preview-row-cards {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .preview-cutin-box {
+    height: 74px;
+    background: #060810;
+    border-top: 2px solid var(--cyan);
+    border-bottom: 2px solid var(--crimson);
+    clip-path: polygon(3% 0%, 100% 0%, 97% 100%, 0% 100%);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+  @media (max-width: 760px) {
+    .bottom-split-viewport { grid-template-columns: 1fr; }
+    .bgm2-modal-body { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Navigation Bar -->
+<div class="topbar">
+  <div class="brand">
+    <span>⚙ ELYSION CLOCKWORK</span>
+    <span class="version-pill">v2.5.2 · BGM2立繪三視圖自動切片 + 6單元序數引力</span>
+  </div>
+  <div class="top-actions">
+    <button class="btn active" id="tabDeskBtn" onclick="switchMainTab('desk')">⚙ 戰術桌與發條槽架 (Declaration)</button>
+    <button class="btn" id="tabClashBtn" onclick="switchMainTab('clash')">🎬 漫畫沙盤與因果觀測 (Diorama & Log)</button>
+    <button class="btn" onclick="exportArtPackJson()" title="匯出6位冒險者立繪與視線座標包">💾 匯出立繪包 (.json)</button>
+    <button class="btn" onclick="document.getElementById('artPackImportInput').click()">📂 匯入立繪包</button>
+    <input type="file" id="artPackImportInput" accept=".json" style="display:none" onchange="importArtPackJson(event)" />
+    <button class="btn btn-dispatch" onclick="dispatchContinuousExpedition()">🚀 鎖定發條・全自動連續出征 (Dispatch)</button>
+  </div>
+</div>
+
+<!-- ==================== VIEW 1: TACTICIAN'S DESK ==================== -->
+<div class="view-panel active" id="viewDesk">
+  <div class="desk-container">
+    <!-- Scope B Shared ExpeditionMandateRack -->
+    <div class="mandate-box">
+      <div class="mandate-header">
+        <div class="mandate-title">🧭 遠征宏觀指令槽架 (ExpeditionMandateRack · Scope B 全隊剩餘 INT 共享池)</div>
+        <div class="int-pool-badge" id="sharedIntBadge">全隊剩餘可用宏觀 INT 池：14 INT</div>
+      </div>
+      <div class="mandate-grid">
+        <div class="mandate-plate">
+          <strong>[WHEN: 節點交鋒結束] 撤退判定 (ON_ABORT_CHECK)</strong>
+          <div>AND 存活骨幹低於 <select id="mandateAbortBones"><option value="2">2 人</option><option value="3" selected>3 人</option><option value="4">4 人</option></select> → DO: <b>立即鳴金收兵返航</b></div>
+        </div>
+        <div class="mandate-plate">
+          <strong>[WHEN: 戰後打掃戰場] 搜刮強度 (ON_AFTERMATH_SCAVENGE)</strong>
+          <div>AND 全隊平均耐力高於 <select id="mandateScavengeStm"><option value="30">30%</option><option value="50" selected>50%</option></select> → DO: <b>軍需官深度打掃 (+警戒值)</b></div>
+        </div>
+        <div class="mandate-plate">
+          <strong>[WHEN: 遭遇地圖機關] 破解策略 (ON_MAP_HAZARD)</strong>
+          <div>AND 具備學者/祭司封印知識 → DO: <b>精準拆解封印 (避免血肉強行平推)</b></div>
+        </div>
+        <div class="mandate-plate">
+          <strong>[WHEN: 進入野營階段] 補給分配 (ON_CAMP_PHASE)</strong>
+          <div>AND 腦霧/疲勞累積 → DO: <b>消耗雙倍乾糧柴火・優先恢復前鋒與統帥 INT/耐力</b></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6-Unit Party Grid (BGM2 Portrait Upload + Ordinal Marching Order + Skeuomorphic Gambit Rack) -->
+    <div class="party-desk-grid" id="partyDeskGrid"></div>
+  </div>
+</div>
+
+<!-- ==================== VIEW 2: SPLIT-SCREEN DIORAMA & SCRUBBABLE LOG ==================== -->
+<div class="view-panel" id="viewClash">
+  <!-- Top 35% Viewport: 1x6 vs 1x6 Side-View Tactical Diorama -->
+  <div class="diorama-viewport" id="dioramaViewport">
+    <div class="diorama-hud-bar">
+      <div id="dioramaNodeLabel" style="font-weight:800;color:var(--brass);">📍 節點 1：邊境裂谷前哨戰 · 序數阻塞引力 (Rule A + Option 3)</div>
+      <div id="dioramaSnapshotInfo" style="color:var(--cyan);font-weight:700;">游標懸停或點擊下方日誌，以 0ms 即時回溯沙盤狀態</div>
+      <div style="font-size:10px;color:var(--text-1);">我方陣列 (Slot 6 → 1) ⚔ 敵方陣列 (Slot 1 → 6)</div>
+    </div>
+
+    <div class="diorama-stage">
+      <!-- Ally 1x6 Grid (Slot 6 on Left -> Slot 1 at Center Clash Line) -->
+      <div class="side-grid" id="dioramaAllyGrid"></div>
+      <!-- Center Clash Line -->
+      <div class="clash-center-pillar">⚔ 交鋒線</div>
+      <!-- Enemy 1x6 Grid (Slot 1 at Center Clash Line -> Slot 6 on Right) -->
+      <div class="side-grid" id="dioramaEnemyGrid"></div>
+    </div>
+
+    <!-- SVG Targeting Vector Overlay -->
+    <svg class="diorama-svg-overlay" id="dioramaSvgOverlay" viewBox="0 0 1200 220" preserveAspectRatio="none"></svg>
+
+    <!-- Diagonal Manga Eye-Line Cut-In (LIFO Depth >= 2) -->
+    <div class="lifo-cutin-overlay" id="lifoCutInOverlay">
+      <div class="lifo-eyeline-art" id="lifoCutInArt"></div>
+      <div class="lifo-cutin-caption">
+        <div class="lifo-tag" id="lifoCutInTag">⚡ REACTIVE HIJACK · LIFO STACK DEPTH #2</div>
+        <div class="lifo-main-text" id="lifoCutInText">薇拉 — 【影步閃避・零時差反擊】！</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom 65% Viewport: Layout A (65% Scrubbable Log | 35% Live Enemy Forensics Rack) -->
+  <div class="bottom-split-viewport">
+    <div class="log-column">
+      <div class="subbar">
+        <span>📜 全自動遠征因果日誌 (預設收合為 1 行戰鬥總結，點擊展開微步時間軸)</span>
+        <span id="logStatsLabel">共 0 個狀態快照</span>
+      </div>
+      <div class="log-scroll-wrap">
+        <div class="log-stream" id="logStream"></div>
+        <div class="bookmark-rail" id="bookmarkRail" title="拐點書籤軌：⚡藍=LIFO連攜 | 💥橘=陣線引力推移 | ☠紅=瀕死輪替 | 🧭金=遠征指令"></div>
+      </div>
+    </div>
+
+    <div class="forensics-column">
+      <div class="subbar">
+        <span>🕵️ 敵方空白戰術槽架・自動逆向推演</span>
+        <span id="reconTierBadge" style="color:var(--cyan);font-weight:800;">偵察階級：Tier 2 🔒完全破譯</span>
+      </div>
+      <div class="forensics-scroll" id="forensicsScroll"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== BGM2 FRAMING & 2D EYE-LINE CALIBRATOR MODAL ==================== -->
+<div class="modal-backdrop" id="bgm2FramingModal">
+  <div class="bgm2-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <div style="font-size:14px;font-weight:800;color:var(--brass);" id="modalUnitTitle">🎨 冒險者立繪與 2D 視線切線校準</div>
+      <button class="btn" onclick="closeBgm2Modal()">✕ 關閉</button>
+    </div>
+
+    <div class="bgm2-modal-body">
+      <!-- Left: Interactive 2D Crosshair Stage -->
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;">
+        <div class="calibrator-stage" id="calibratorStage" onpointerdown="startCrosshairDrag(event)" onpointermove="moveCrosshairDrag(event)" onpointerup="endCrosshairDrag()">
+          <div class="eyeline-band" id="calibEyelineBand"></div>
+          <div class="eyeline-crosshair" id="calibCrosshair"></div>
+        </div>
+        <div style="font-size:11px;color:var(--text-1);text-align:center;">
+          👆 直接在圖片上點擊或拖曳青色十字準星 <b>(╋)</b> 對準角色雙眼中心
+        </div>
+      </div>
+
+      <!-- Right: Controls + Live 3-View Instant Preview -->
+      <div class="preview-column">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button class="btn active" onclick="document.getElementById('modalFileInput').click()">📂 選擇自訂圖片 (PNG/JPG/WebP)</button>
+          <input type="file" id="modalFileInput" accept="image/*" style="display:none" onchange="handleModalFileSelect(event)" />
+          <button class="btn" onclick="resetCurrentUnitArt()">↺ 還原預設職業剪影</button>
+        </div>
+
+        <div style="background:var(--bg-0);border:1px solid var(--border);padding:8px;border-radius:5px;display:flex;flex-direction:column;gap:6px;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;">
+            <span>👁 視線焦點座標：<b id="calibCoordLabel" style="color:var(--cyan);">X: 50% , Y: 24%</b></span>
+            <span>🔍 縮放倍率：<b id="calibZoomLabel" style="color:var(--brass);">1.15x</b></span>
+          </div>
+          <input type="range" id="calibZoomSlider" min="1.0" max="2.4" step="0.05" value="1.15" oninput="updateCalibZoom(this.value)" />
+        </div>
+
+        <div style="font-size:11px;font-weight:700;color:var(--brass);">✨ 單圖三視圖即時自動切片預覽 (0ms CSS 變數同步)：</div>
+        <div class="preview-row-cards">
+          <div>
+            <div style="font-size:10px;color:var(--text-2);margin-bottom:3px;">① 戰術桌 3:4 立繪框</div>
+            <div class="bgm2-desk-portrait" id="prevDeskCard" style="cursor:default;"></div>
+          </div>
+          <div style="flex:1;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+              <span style="font-size:10px;color:var(--text-2);">② 1×6 沙盤骨幹框 (+著色器預覽)</span>
+              <div style="display:flex;gap:3px;">
+                <button class="mini-btn" onclick="setPreviewShader('')">正常</button>
+                <button class="mini-btn" onclick="setPreviewShader('shader-mana-glow')">💧法力</button>
+                <button class="mini-btn" onclick="setPreviewShader('shader-exhausted')">💦枯竭</button>
+                <button class="mini-btn" onclick="setPreviewShader('shader-bleeding')">🩸瀕死</button>
+              </div>
+            </div>
+            <div class="diorama-bone-portrait" id="prevDioramaCard" style="height:102px;">
+              <div class="bone-name-overlay" id="prevDioramaName">預覽角色</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:10px;color:var(--text-2);margin-bottom:3px;">③ LIFO 深度≥2 斜向漫畫眼神切入 (2.1x 自動鎖定雙眼切線)</div>
+          <div class="preview-cutin-box">
+            <div class="lifo-eyeline-art" id="prevCutInArt"></div>
+            <div class="lifo-cutin-caption">
+              <div class="lifo-tag">⚡ REACTIVE HIJACK · LIFO DEPTH #2</div>
+              <div class="lifo-main-text" id="prevCutInCaption">【眼神切入預覽】零時差反擊！</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:auto;">
+          <button class="btn active" onclick="saveAndApplyModalArt()">✅ 儲存並套用至沙盤與戰術桌</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ISOLATED MODULE 1: BGM2 ASSET STUDIO & PIPELINE A ==================== -->
+<script id="elysion-asset-studio">
+  const ART_DB_NAME = 'ElysionArtDB_v252';
+  const ART_STORE_NAME = 'unitPortraits';
+  const ASSET_REGISTRY = {};
+
+  // Generate Dark-Fantasy SVG Class Silhouettes with Glowing Eye Visor at Y=24%
+  function createClassSilhouetteDataUrl(accentColor, visorColor, emblemText, weaponShape) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 320">
+      <defs>
+        <radialGradient id="g" cx="50%" cy="28%" r="65%">
+          <stop offset="0%" stop-color="${accentColor}" stop-opacity="0.38"/>
+          <stop offset="100%" stop-color="#07090f" stop-opacity="1"/>
+        </radialGradient>
+      </defs>
+      <rect width="240" height="320" fill="url(#g)"/>
+      <path d="M35 320 C42 210 75 168 120 168 C165 168 198 210 205 320 Z" fill="#121726" stroke="${accentColor}" stroke-width="2"/>
+      <path d="M72 152 C72 104 92 42 120 42 C148 42 168 104 168 152 C152 166 88 166 72 152 Z" fill="#0d111c" stroke="${accentColor}" stroke-width="2"/>
+      ${weaponShape}
+      <polygon points="88,75 116,80 112,86 84,81" fill="${visorColor}"/>
+      <polygon points="152,75 124,80 128,86 156,81" fill="${visorColor}"/>
+      <line x1="65" y1="78" x2="175" y2="78" stroke="${visorColor}" stroke-width="1.5" stroke-opacity="0.55"/>
+      <text x="120" y="265" fill="${accentColor}" font-family="monospace" font-size="15" font-weight="bold" text-anchor="middle" opacity="0.65">${emblemText}</text>
+    </svg>`;
+    return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  }
+
+  const DEFAULT_SILHOUETTES = {
+    ally_0: createClassSilhouetteDataUrl('#f59e0b', '#38bdf8', 'VANGUARD · BROM', '<rect x="176" y="30" width="14" height="260" fill="#263147" stroke="#f59e0b" stroke-width="2"/>'),
+    ally_1: createClassSilhouetteDataUrl('#f43f5e', '#f43f5e', 'BLADE · VERA', '<path d="M192 28 L204 28 L175 280 L165 280 Z" fill="#3b1d2e" stroke="#f43f5e" stroke-width="2"/>'),
+    ally_2: createClassSilhouetteDataUrl('#38bdf8', '#38bdf8', 'LAWMAGE · ASMO', '<circle cx="120" cy="36" r="24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="5,3"/>'),
+    ally_3: createClassSilhouetteDataUrl('#10b981', '#a7f3d0', 'RANGER · KARL', '<path d="M185 35 Q225 140 185 265" fill="none" stroke="#10b981" stroke-width="3"/>'),
+    ally_4: createClassSilhouetteDataUrl('#eab308', '#fef08a', 'PRIEST · ELENA', '<path d="M120 14 L120 40 M107 27 L133 27" stroke="#eab308" stroke-width="4"/>'),
+    ally_5: createClassSilhouetteDataUrl('#a855f7', '#e9d5ff', 'QM · RENN', '<rect x="50" y="185" width="140" height="70" rx="6" fill="#1b1630" stroke="#a855f7" stroke-width="2"/>'),
+    enemy_0: createClassSilhouetteDataUrl('#ef4444', '#ff2a2a', 'ORC VANGUARD', ''),
+    enemy_1: createClassSilhouetteDataUrl('#f97316', '#facc15', 'GOBLIN STALKER', ''),
+    enemy_2: createClassSilhouetteDataUrl('#a855f7', '#f43f5e', 'HEX SHAMAN', ''),
+    enemy_3: createClassSilhouetteDataUrl('#dc2626', '#fb923c', 'RAIDER BOW', ''),
+    enemy_4: createClassSilhouetteDataUrl('#e11d48', '#fda4af', 'BLOOD BANNER', ''),
+    enemy_5: createClassSilhouetteDataUrl('#ca8a04', '#facc15', 'BOMBARDIER', '')
+  };
+
+  function initDefaultRegistry() {
+    Object.keys(DEFAULT_SILHOUETTES).forEach(unitId => {
+      ASSET_REGISTRY[unitId] = {
+        unitId,
+        dataUrl: DEFAULT_SILHOUETTES[unitId],
+        focalX: 50,
+        focalY: 24,
+        zoom: 1.15,
+        isCustom: false
+      };
+    });
+  }
+  initDefaultRegistry();
+
+  // IndexedDB Persistence Layer (Layer 1)
+  function openArtDB() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(ART_DB_NAME, 1);
+      req.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains(ART_STORE_NAME)) {
+          db.createObjectStore(ART_STORE_NAME, { keyPath: 'unitId' });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  async function loadStoredPortraitsFromDB() {
+    try {
+      const db = await openArtDB();
+      return new Promise((resolve) => {
+        const tx = db.transaction(ART_STORE_NAME, 'readonly');
+        const store = tx.objectStore(ART_STORE_NAME);
+        const req = store.getAll();
+        req.onsuccess = () => {
+          (req.result || []).forEach(rec => {
+            if (rec && rec.unitId && rec.dataUrl) {
+              ASSET_REGISTRY[rec.unitId] = { ...rec, isCustom: true };
+            }
+          });
+          resolve();
+        };
+        req.onerror = () => resolve();
+      });
+    } catch (_) {}
+  }
+
+  async function saveUnitPortraitToDB(record) {
+    try {
+      const db = await openArtDB();
+      const tx = db.transaction(ART_STORE_NAME, 'readwrite');
+      tx.objectStore(ART_STORE_NAME).put(record);
+    } catch (_) {}
+  }
+
+  async function deleteUnitPortraitFromDB(unitId) {
+    try {
+      const db = await openArtDB();
+      const tx = db.transaction(ART_STORE_NAME, 'readwrite');
+      tx.objectStore(ART_STORE_NAME).delete(unitId);
+    } catch (_) {}
+  }
+
+  // Pipeline A: Offscreen Canvas 768px WebP Normalization + Pre-Decoded GPU Cache
+  async function normalizeAndDecodeImage(file) {
+    const rawUrl = URL.createObjectURL(file);
+    try {
+      const img = new Image();
+      img.src = rawUrl;
+      await img.decode();
+      const maxDim = 768;
+      let w = img.naturalWidth || 512;
+      let h = img.naturalHeight || 680;
+      if (w > maxDim || h > maxDim) {
+        if (w > h) { h = Math.round((h * maxDim) / w); w = maxDim; }
+        else { w = Math.round((w * maxDim) / h); h = maxDim; }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      let webpDataUrl = canvas.toDataURL('image/webp', 0.88);
+      if (!webpDataUrl.startsWith('data:image/webp')) {
+        webpDataUrl = canvas.toDataURL('image/jpeg', 0.88);
+      }
+      const warmImg = new Image();
+      warmImg.src = webpDataUrl;
+      if (warmImg.decode) await warmImg.decode();
+      return webpDataUrl;
+    } finally {
+      URL.revokeObjectURL(rawUrl);
+    }
+  }
+
+  function applyArtVariablesToElement(el, unitId) {
+    if (!el) return;
+    const cfg = ASSET_REGISTRY[unitId] || ASSET_REGISTRY.ally_0;
+    const safeUrl = `url("${cfg.dataUrl}")`;
+    el.style.setProperty('--portrait-url', safeUrl);
+    el.style.setProperty('--focal-x', cfg.focalX + '%');
+    el.style.setProperty('--focal-y', cfg.focalY + '%');
+    el.style.setProperty('--focal-zoom', String(cfg.zoom || 1.15));
+  }
+</script>
+
+<!-- ==================== ISOLATED MODULE 2: CORE COMBAT & GRAVITY ENGINE ==================== -->
+<script id="elysion-core-engine">
+  const PARTY_ROSTER = [
+    {
+      id: 'ally_0', name: '布洛姆 (Brom)', baseClass: '重裝先鋒 (Vanguard)', subClass: '統帥 (Commander)',
+      slot: 1, maxHp: 340, maxStm: 140, maxMana: 40, agi: 11, intCap: 6, str: 18,
+      fleshName: '鋼鐵重步兵團', fleshMax: 480, density: 88, area: 1.2,
+      plates: [
+        { origin: 'ARTIFACT_PREFIX', cost: 0, name: '🏺 [反擊刻印] 破陣塔盾', when: 'ON_HIT_TAKEN', and: 'STM_GT_30', do: '盾擊震退 (序數交換)' },
+        { origin: 'MENTAL_SKILL', cost: 2, dualAnd: true, when: 'ON_CLASH_START', and: 'SLOT_EQ_1 && FLESH_GT_50', do: '全軍指揮鏈・身先士卒 (×2.43)' },
+        { origin: 'MENTAL_SKILL', cost: 2, when: 'ON_ALLY_TARGETED', and: 'TARGET_IN_REAR', do: '鋼鐵攔截・承受傷害' }
+      ]
+    },
+    {
+      id: 'ally_1', name: '薇拉 (Vera)', baseClass: '血族劍聖 (Swordmaster)', subClass: '刺客 (Assassin)',
+      slot: 2, maxHp: 240, maxStm: 130, maxMana: 60, agi: 19, intCap: 5, str: 16,
+      fleshName: '夜刃決死隊', fleshMax: 280, density: 62, area: 1.0,
+      plates: [
+        { origin: 'INTUITION_CLIP', cost: 0, name: '📎 [直覺側掛 0-INT]', when: 'ON_ENEMY_WINDUP', and: 'LIFO_READY', do: '影步閃避・零時差反擊 (LIFO#2)' },
+        { origin: 'MENTAL_SKILL', cost: 2, when: 'ON_TURN_READY', and: 'ENEMY_SLOT1_BROKEN', do: '血月三連斬 (物理×視覺)' }
+      ]
+    },
+    {
+      id: 'ally_2', name: '阿斯莫 (Asmo)', baseClass: '律法魔導 (Lawmage)', subClass: '學者 (Scholar)',
+      slot: 3, maxHp: 190, maxStm: 90, maxMana: 220, agi: 14, intCap: 8, str: 8,
+      fleshName: '奧術觀測衛隊', fleshMax: 220, density: 54, area: 1.1,
+      plates: [
+        { origin: 'MENTAL_SKILL', cost: 3, dualAnd: true, when: 'ON_ENEMY_CAST', and: 'MANA_GT_60 && RECON_LOCK', do: '律法反制・真傷雷擊 (LIFO#2)' },
+        { origin: 'MENTAL_SKILL', cost: 2, when: 'ON_TURN_READY', and: 'MANA_RESERVOIR_HIGH', do: '酸蝕爆裂波 (化學×貫穿)' }
+      ]
+    },
+    {
+      id: 'ally_3', name: '卡爾 (Karl)', baseClass: '獵鷹遊俠 (Ranger)', subClass: '軍需官 (Quartermaster)',
+      slot: 4, maxHp: 220, maxStm: 150, maxMana: 50, agi: 17, intCap: 6, str: 15,
+      fleshName: '長弓游擊營', fleshMax: 260, density: 58, area: 1.3,
+      plates: [
+        { origin: 'INTUITION_CLIP', cost: 0, name: '📎 [直覺側掛 0-INT]', when: 'ON_AMBUSH_DETECT', and: 'ALWAYS', do: '照明信號彈・壓制伏擊' },
+        { origin: 'MENTAL_SKILL', cost: 2, when: 'ON_TURN_READY', and: 'DIST_LE_5', do: '貫穿齊射・支援前鋒' }
+      ]
+    },
+    {
+      id: 'ally_4', name: '埃莉娜 (Elena)', baseClass: '聖約祭司 (Priest)', subClass: '統帥 (Commander)',
+      slot: 5, maxHp: 210, maxStm: 100, maxMana: 190, agi: 12, intCap: 7, str: 9,
+      fleshName: '聖堂護衛團', fleshMax: 310, density: 74, area: 1.2,
+      plates: [
+        { origin: 'MENTAL_SKILL', cost: 2, dualAnd: true, when: 'ON_ALLY_BLEEDING', and: 'TARGET_IN_TAIL && MANA_GT_30', do: '緊急止血聖詠 (LIFO#2)' },
+        { origin: 'MENTAL_SKILL', cost: 2, when: 'ON_TURN_READY', and: 'FRONTLINE_INT_LOW', do: '聖約士氣鼓舞' }
+      ]
+    },
+    {
+      id: 'ally_5', name: '雷恩 (Renn)', baseClass: '戰地軍需官 (Quartermaster)', subClass: '鍊金術士 (Alchemist)',
+      slot: 6, maxHp: 250, maxStm: 160, maxMana: 90, agi: 13, intCap: 6, str: 12,
+      fleshName: '重裝輜重車隊', fleshMax: 420, density: 82, area: 1.5,
+      plates: [
+        { origin: 'ARTIFACT_PREFIX', cost: 0, name: '🏺 [急件信標] 軍需腰牌', when: 'ON_ALLY_STM_LOW', and: 'STM_LT_30', do: '戰地急件興奮劑補給 (LIFO#2)' },
+        { origin: 'MENTAL_SKILL', cost: 2, when: 'ON_TURN_READY', and: 'ALWAYS', do: '鍊金火油投擲 (生物×場地)' }
+      ]
+    }
+  ];
+
+  const ENEMY_TEMPLATES = [
+    { id: 'enemy_0', name: '碎骨獸人督軍', role: '重裝前鋒', maxHp: 330, maxStm: 130, maxMana: 30, fleshName: '狂戰獸人團', fleshMax: 440, density: 84, when: 'ON_TURN_READY', and: 'TARGET_SLOT_1', do: '重錘破陣猛擊 (物理×近戰)' },
+    { id: 'enemy_1', name: '暗影哥布林刺客', role: '高速奇襲', maxHp: 195, maxStm: 140, maxMana: 40, fleshName: '夜襲狼騎兵', fleshMax: 240, density: 56, when: 'ON_ALLY_ATTACKED', and: 'STM_GT_50', do: '毒刃截擊 (LIFO#2 反制)' },
+    { id: 'enemy_2', name: '血咒薩滿祭司', role: '規則咒術', maxHp: 210, maxStm: 90, maxMana: 180, fleshName: '血祭狂信徒', fleshMax: 260, density: 60, when: 'ON_TURN_READY', and: 'MANA_GT_40', do: '腐血瘟疫霧 (生物×貫穿)' },
+    { id: 'enemy_3', name: '裂谷重弩射手', role: '遠程狙擊', maxHp: 200, maxStm: 120, maxMana: 30, fleshName: '重弩射擊隊', fleshMax: 250, density: 58, when: 'ON_TURN_READY', and: 'DIST_LE_6', do: '破甲齊射 (物理×視覺)' },
+    { id: 'enemy_4', name: '骸骨戰旗統領', role: '指揮增幅', maxHp: 260, maxStm: 120, maxMana: 80, fleshName: '長戟督戰隊', fleshMax: 330, density: 75, when: 'ON_CLASH_START', and: 'FLESH_ALIVE', do: '督戰號角・死戰不退' },
+    { id: 'enemy_5', name: '煉金轟炸投石手', role: '後排轟擊', maxHp: 220, maxStm: 110, maxMana: 70, fleshName: '火藥攻城班', fleshMax: 290, density: 68, when: 'ON_TURN_READY', and: 'ALWAYS', do: '酸火臼砲轟擊 (化學×場地)' }
+  ];
+
+  let SNAPSHOT_TIMELINE = [];
+  let MACRO_TIMELINE_ITEMS = [];
+  let BOOKMARK_TICKS = [];
+
+  // Rule A (Ordinal Blocking Gravity) + Option 3 (Bone-Immediate Bypass + Rear Casualty Tail)
+  function applyOrdinalBlockingGravity(units) {
+    const sorted = [...units].sort((a, b) => a.slot - b.slot);
+    const activeBlockers = [];
+    const rearCasualties = [];
+    sorted.forEach(u => {
+      if (u.hp > 0 || u.fieldPromoted) {
+        activeBlockers.push(u);
+      } else {
+        rearCasualties.push(u);
+      }
+    });
+    const combined = [...activeBlockers, ...rearCasualties];
+    const shifts = [];
+    combined.forEach((u, idx) => {
+      const targetSlot = idx + 1;
+      if (u.slot !== targetSlot) {
+        shifts.push(`${u.name} (格${u.slot}→格${targetSlot})`);
+        u.slot = targetSlot;
+      }
+    });
+    return shifts;
+  }
+
+  function cloneUnitsState(units) {
+    return units.map(u => ({ ...u }));
+  }
+
+  function recordSnapshot(nodeTitle, allies, enemies, meta) {
+    const snapId = SNAPSHOT_TIMELINE.length;
+    const snap = {
+      id: snapId,
+      nodeTitle,
+      allies: cloneUnitsState(allies),
+      enemies: cloneUnitsState(enemies),
+      actorId: meta.actorId || null,
+      targetId: meta.targetId || null,
+      vectorType: meta.vectorType || null,
+      lifoDepth: meta.lifoDepth || 1,
+      cutInUnitId: meta.cutInUnitId || null,
+      cutInTitle: meta.cutInTitle || '',
+      cutInText: meta.cutInText || '',
+      forensicReveals: [...(meta.forensicReveals || [])],
+      headline: meta.headline || ''
+    };
+    SNAPSHOT_TIMELINE.push(snap);
+    return snapId;
+  }
+
+  function runSingleBattleSimulation(nodeTitle, allies, enemyScale, forensicList, battleIdx) {
+    const enemies = ENEMY_TEMPLATES.map((tpl, i) => ({
+      ...tpl,
+      slot: i + 1,
+      hp: Math.round(tpl.maxHp * enemyScale),
+      maxHp: Math.round(tpl.maxHp * enemyScale),
+      stm: tpl.maxStm,
+      mana: tpl.maxMana,
+      fleshHp: Math.round(tpl.fleshMax * enemyScale),
+      fleshMax: Math.round(tpl.fleshMax * enemyScale),
+      bleedingOut: false,
+      fieldPromoted: false,
+      frenzy: false,
+      uplinkDelay: i
+    }));
+
+    const microSteps = [];
+    // Initial Gravity Check (Rule A)
+    applyOrdinalBlockingGravity(allies);
+    applyOrdinalBlockingGravity(enemies);
+
+    const openSnapId = recordSnapshot(nodeTitle, allies, enemies, {
+      headline: `${nodeTitle} — 雙方 6 單元陣列鎖定於中央交鋒線`,
+      forensicReveals: forensicList
+    });
+    microSteps.push({
+      snapId: openSnapId,
+      type: 'normal',
+      text: `🏁 【陣列展開】我方 6 單元與敵方 6 單元於 Slot 1 中央交鋒線進入 [Interlocked] 接戰狀態。`
+    });
+
+    for (let round = 1; round <= 3; round++) {
+      // Step 1: Ally Vanguard / Clash Strike
+      const frontAlly = allies.find(a => a.slot === 1) || allies[0];
+      const frontEnemy = enemies.find(e => e.slot === 1) || enemies[0];
+      frontAlly.stm = Math.max(10, frontAlly.stm - 22);
+      frontEnemy.fleshHp = Math.max(0, frontEnemy.fleshHp - 155);
+      frontEnemy.hp = Math.max(0, frontEnemy.hp - (round === 2 ? 210 : 95));
+
+      if (!forensicList.includes(frontEnemy.id)) forensicList.push(frontEnemy.id);
+
+      const s1 = recordSnapshot(nodeTitle, allies, enemies, {
+        actorId: frontAlly.id,
+        targetId: frontEnemy.id,
+        vectorType: 'physical',
+        lifoDepth: 1,
+        forensicReveals: forensicList,
+        headline: `R${round}·T1 ${frontAlly.name} (格1) 率領【${frontAlly.fleshName}】猛擊 ${frontEnemy.name} (格1)`
+      });
+      microSteps.push({
+        snapId: s1,
+        type: 'normal',
+        text: `R${round}·T1 ⚔ [格1 交鋒] ${frontAlly.name} 發動【身先士卒 ×2.43】重擊 ${frontEnemy.name} (骨幹HP ${frontEnemy.hp}/${frontEnemy.maxHp} · 血肉 ${frontEnemy.fleshHp})`
+      });
+
+      // Step 2: LIFO Depth #2 Reactive Hijack (Vera or Asmo or Renn)
+      const hijacker = round === 1 ? allies.find(a => a.id === 'ally_1') : (round === 2 ? allies.find(a => a.id === 'ally_2') : allies.find(a => a.id === 'ally_5'));
+      const enemyCaster = enemies.find(e => e.slot === 2) || frontEnemy;
+      if (!forensicList.includes(enemyCaster.id)) forensicList.push(enemyCaster.id);
+
+      if (round === 3) {
+        frontAlly.stm = Math.min(frontAlly.maxStm, frontAlly.stm + 65);
+      } else {
+        enemyCaster.hp = Math.max(0, enemyCaster.hp - 135);
+      }
+
+      const cutText = round === 1
+        ? `${hijacker.name} — 【📎直覺 0-INT：影步閃避・零時差反擊】斬斷敵方連段！`
+        : (round === 2
+          ? `${hijacker.name} — 【律法反制・真傷雷擊】貫穿敵方施法前搖！`
+          : `${hijacker.name} — 【🏺急件信標：戰地興奮劑補給】瞬間恢復前鋒耐力！`);
+
+      const s2 = recordSnapshot(nodeTitle, allies, enemies, {
+        actorId: hijacker.id,
+        targetId: round === 3 ? frontAlly.id : enemyCaster.id,
+        vectorType: round === 2 ? 'rule' : 'chemical',
+        lifoDepth: 2,
+        cutInUnitId: hijacker.id,
+        cutInTitle: `⚡ REACTIVE HIJACK · LIFO STACK DEPTH #2 (${hijacker.baseClass})`,
+        cutInText: cutText,
+        forensicReveals: forensicList,
+        headline: cutText
+      });
+      microSteps.push({
+        snapId: s2,
+        type: 'lifo',
+        text: `R${round}·T2 ⚡ [LIFO 深度#2 插隊截擊] └─ ${cutText}`
+      });
+      BOOKMARK_TICKS.push({ snapId: s2, battleIdx, type: 'tick-lifo', label: 'LIFO#2 截擊' });
+
+      // Step 3: Check Option 3 Bone-Immediate Bypass & Rule A Ordinal Gravity
+      if (round === 2) {
+        frontEnemy.hp = 0;
+        frontEnemy.bleedingOut = true;
+      }
+      if (round === 2 && battleIdx === 1) {
+        // Demonstrate Ally Vanguard taking heavy hit and rotating to Rear Casualty Tail while Slot 2 slides to Slot 1
+        frontAlly.hp = 0;
+        frontAlly.bleedingOut = true;
+      }
+
+      const enemyShifts = applyOrdinalBlockingGravity(enemies);
+      const allyShifts = applyOrdinalBlockingGravity(allies);
+
+      if (enemyShifts.length > 0 || allyShifts.length > 0) {
+        const shiftDesc = [
+          allyShifts.length ? `我方推移：${allyShifts.join('、')}` : '',
+          enemyShifts.length ? `敵方推移：${enemyShifts.join('、')}` : ''
+        ].filter(Boolean).join(' ｜ ');
+
+        const sGrav = recordSnapshot(nodeTitle, allies, enemies, {
+          actorId: allies.find(a => a.slot === 1)?.id,
+          targetId: enemies.find(e => e.slot === 1)?.id,
+          vectorType: 'blast',
+          lifoDepth: 1,
+          forensicReveals: forensicList,
+          headline: `🌊 【序數阻塞引力推移】${shiftDesc}`
+        });
+        microSteps.push({
+          snapId: sGrav,
+          type: 'gravity',
+          text: `R${round}·T3 🌊 [Rule A 序數引力推移 + Option 3 瀕死後撤] ${shiftDesc}`
+        });
+        BOOKMARK_TICKS.push({ snapId: sGrav, battleIdx, type: 'tick-gravity', label: '陣線引力推移' });
+
+        // Elena LIFO Emergency Stabilization if an ally rotated to the Rear Casualty Tail
+        const bleedingAlly = allies.find(a => a.bleedingOut);
+        const priest = allies.find(a => a.id === 'ally_4');
+        if (bleedingAlly && priest) {
+          bleedingAlly.hp = 115;
+          bleedingAlly.bleedingOut = false;
+          const recoverShifts = applyOrdinalBlockingGravity(allies);
+          const sHeal = recordSnapshot(nodeTitle, allies, enemies, {
+            actorId: priest.id,
+            targetId: bleedingAlly.id,
+            vectorType: 'rule',
+            lifoDepth: 2,
+            cutInUnitId: priest.id,
+            cutInTitle: '⚡ REACTIVE STABILIZE · LIFO STACK DEPTH #2',
+            cutInText: `${priest.name} — 【緊急止血聖詠】於後衛傷兵尾端救回 ${bleedingAlly.name}！`,
+            forensicReveals: forensicList,
+            headline: `${priest.name} 救回後撤傷兵 ${bleedingAlly.name}`
+          });
+          microSteps.push({
+            snapId: sHeal,
+            type: 'lifo',
+            text: `R${round}·T4 ⚡ [LIFO#2 後衛傷兵急救] └─ ${priest.name} 對格6傷兵 ${bleedingAlly.name} 施放【緊急止血聖詠】(${recoverShifts.join('、')})`
+          });
+          BOOKMARK_TICKS.push({ snapId: sHeal, battleIdx, type: 'tick-bleed', label: '傷兵急救復位' });
+        }
+      }
+    }
+
+    const endSnapId = recordSnapshot(nodeTitle, allies, enemies, {
+      forensicReveals: forensicList,
+      headline: `🏆 ${nodeTitle} 結算完成 — 敵方前鋒潰敗`
+    });
+
+    return {
+      battleIdx,
+      nodeTitle,
+      summarySnapId: endSnapId,
+      stepCount: microSteps.length,
+      summaryText: `⚔ 【戰鬥總結 · ${nodeTitle}】共 ${microSteps.length} 步微狀態 | LIFO 截擊×2 · 序數引力推移已觸發`,
+      microSteps
+    };
+  }
+
+  function dispatchContinuousExpedition() {
+    SNAPSHOT_TIMELINE = [];
+    MACRO_TIMELINE_ITEMS = [];
+    BOOKMARK_TICKS = [];
+
+    const allies = PARTY_ROSTER.map((u, idx) => ({
+      ...u,
+      slot: idx + 1,
+      hp: u.maxHp,
+      stm: u.maxStm,
+      mana: u.maxMana,
+      fleshHp: u.fleshMax,
+      bleedingOut: false,
+      fieldPromoted: false,
+      frenzy: false,
+      uplinkDelay: idx
+    }));
+
+    const forensicReveals = ['enemy_0', 'enemy_1'];
+
+    // Macro Row 1: Expedition Lock
+    const lockSnap = recordSnapshot('🚀 遠征發條鎖定', allies, ENEMY_TEMPLATES.map((e, i) => ({ ...e, slot: i + 1, hp: e.maxHp, stm: e.maxStm, mana: e.maxMana, fleshHp: e.fleshMax })), {
+      forensicReveals,
+      headline: '🚀 發條鎖定：6 單元完整陣列 + 遠征宏觀指令槽架開始全自動推演'
+    });
+    MACRO_TIMELINE_ITEMS.push({
+      kind: 'macro',
+      snapId: lockSnap,
+      text: '🧭 【遠征發條鎖定】6 名冒險者與 6 支血肉兵團按序數 1..6 號位緊密排列，全自動連續出征開始。'
+    });
+
+    // Battle 1
+    const b1 = runSingleBattleSimulation('節點 1：邊境裂谷前哨遭遇戰', allies, 1.0, forensicReveals, 0);
+    MACRO_TIMELINE_ITEMS.push({ kind: 'battle', battle: b1 });
+
+    // Aftermath + Camp Mandate
+    allies.forEach(a => { a.stm = Math.min(a.maxStm, a.stm + 35); });
+    forensicReveals.push('enemy_2', 'enemy_3');
+    const campSnap = recordSnapshot('⛺ 戰後打掃與野營補給階段', allies, SNAPSHOT_TIMELINE[b1.summarySnapId].enemies, {
+      forensicReveals,
+      headline: '🧭 [ExpeditionMandateRack] 軍需官雷恩執行戰後搜刮與野營補給'
+    });
+    MACRO_TIMELINE_ITEMS.push({
+      kind: 'macro',
+      snapId: campSnap,
+      text: '⛺ 【宏觀指令觸發 · ON_AFTERMATH & ON_CAMP】軍需官雷恩完成戰場搜刮並分發口糧，全隊耐力與法力回充。'
+    });
+    BOOKMARK_TICKS.push({ snapId: campSnap, battleIdx: null, type: 'tick-mandate', label: '野營補給指令' });
+
+    // Battle 2 (Escalation Ambush + Vanguard Casualty Rotation Demo)
+    forensicReveals.push('enemy_4', 'enemy_5');
+    const b2 = runSingleBattleSimulation('節點 2：深淵裂谷督軍主力決戰', allies, 1.15, forensicReveals, 1);
+    MACRO_TIMELINE_ITEMS.push({ kind: 'battle', battle: b2 });
+
+    renderLogAndBookmarks();
+    switchMainTab('clash');
+    applySnapshotToDiorama(b1.summarySnapId);
+  }
+</script>
+
+<!-- ==================== ISOLATED MODULE 3: UI RENDERER & 0ms SCRUBBING ==================== -->
+<script id="elysion-ui-renderer">
+  let activeModalUnitId = 'ally_0';
+  let tempModalConfig = null;
+  let isDraggingCrosshair = false;
+  let previewShaderClass = '';
+
+  function switchMainTab(tab) {
+    document.getElementById('viewDesk').classList.toggle('active', tab === 'desk');
+    document.getElementById('viewClash').classList.toggle('active', tab === 'clash');
+    document.getElementById('tabDeskBtn').classList.toggle('active', tab === 'desk');
+    document.getElementById('tabClashBtn').classList.toggle('active', tab === 'clash');
+  }
+
+  // Render 6 Ally Cards on the Tactician's Desk
+  function renderTacticianDesk() {
+    const grid = document.getElementById('partyDeskGrid');
+    grid.innerHTML = '';
+    let totalRemainingInt = 0;
+
+    PARTY_ROSTER.sort((a, b) => a.slot - b.slot).forEach((unit, idx) => {
+      const usedInt = unit.plates.reduce((acc, p) => acc + p.cost, 0);
+      const remInt = Math.max(0, unit.intCap - usedInt);
+      totalRemainingInt += remInt;
+
+      const card = document.createElement('div');
+      card.className = 'unit-desk-card';
+      card.ondragover = (e) => { e.preventDefault(); card.classList.add('drag-over'); };
+      card.ondragleave = () => card.classList.remove('drag-over');
+      card.ondrop = async (e) => {
+        e.preventDefault();
+        card.classList.remove('drag-over');
+        const file = e.dataTransfer?.files?.[0];
+        if (file && file.type.startsWith('image/')) {
+          await openBgm2ModalWithFile(unit.id, file);
+        }
+      };
+
+      const platesHtml = unit.plates.map(p => {
+        const cls = p.origin === 'ARTIFACT_PREFIX' ? 'gambit-plate artifact-seal' : (p.origin === 'INTUITION_CLIP' ? 'gambit-plate intuition-clip' : 'gambit-plate');
+        const badge = p.origin === 'ARTIFACT_PREFIX' ? p.name : (p.origin === 'INTUITION_CLIP' ? p.name : `🧠 心智技能 (${p.cost} INT)${p.dualAnd ? ' · ➕雙重邏輯' : ''}`);
+        return `<div class="${cls}" style="min-height:${Math.max(1, p.cost) * 26}px">
+          <div class="plate-row-top">
+            <span style="font-weight:700;color:var(--brass);">${badge}</span>
+            <span style="font-size:9px;color:var(--text-2);">${p.cost} INT 軌</span>
+          </div>
+          <div class="plate-sockets">
+            <span class="socket-tag socket-when">WHEN: ${p.when}</span>
+            <span class="socket-tag socket-and">AND: ${p.and}</span>
+            <span class="socket-tag socket-do">DO: ${p.do}</span>
+          </div>
+        </div>`;
+      }).join('');
+
+      card.innerHTML = `
+        <div class="unit-desk-top">
+          <div class="bgm2-desk-portrait" id="deskPortrait_${unit.id}" onclick="openBgm2Modal('${unit.id}')" title="點擊或拖放圖片以更換立繪與校準視線切線">
+            <span class="slot-order-pill">序數 #${unit.slot}</span>
+            <div class="bgm2-portrait-badge">🖼️ 更換立繪 / 視線</div>
+          </div>
+          <div class="unit-meta">
+            <div>
+              <div class="unit-name-row">
+                <span class="unit-name">${unit.name}</span>
+                <div class="ordinal-btns">
+                  <button class="mini-btn" onclick="swapOrdinalSlot(${idx}, -1)" title="前移序數號位">◄ 前移</button>
+                  <button class="mini-btn" onclick="swapOrdinalSlot(${idx}, 1)" title="後移序數號位">後移 ►</button>
+                </div>
+              </div>
+              <div style="color:var(--cyan);font-weight:700;margin:2px 0;">${unit.baseClass} × ${unit.subClass}</div>
+            </div>
+            <div class="stat-strip">
+              <span class="stat-pill">HP ${unit.maxHp}</span>
+              <span class="stat-pill">耐力 ${unit.maxStm}</span>
+              <span class="stat-pill">法力 ${unit.maxMana}</span>
+              <span class="stat-pill">AGI ${unit.agi}</span>
+              <span class="stat-pill" style="border-color:var(--cyan);color:var(--cyan);">個人INT ${usedInt}/${unit.intCap} (餘 ${remInt})</span>
+            </div>
+            <div style="font-size:10px;color:var(--text-1);background:var(--bg-0);padding:3px 6px;border-radius:3px;border:1px solid var(--border);">
+              🚩 血肉兵團：<b>${unit.fleshName}</b> (完整度 ${unit.fleshMax} · 密度 ${unit.density} · 面積 ${unit.area}x)
+            </div>
+          </div>
+        </div>
+        <div class="gambit-rack-frame">
+          <div class="rack-header">
+            <span>⚙ 垂直戰術槽架 (物理軌道高度對應 INT 權重)</span>
+            <span>支援拖放圖片直接綁定</span>
+          </div>
+          ${platesHtml}
+        </div>
+      `;
+      grid.appendChild(card);
+      applyArtVariablesToElement(card.querySelector(`#deskPortrait_${unit.id}`), unit.id);
+    });
+
+    document.getElementById('sharedIntBadge').textContent = `全隊剩餘可用宏觀 INT 池：${totalRemainingInt} INT (已啟動 4 條遠征指令)`;
+  }
+
+  function swapOrdinalSlot(idx, dir) {
+    const targetIdx = idx + dir;
+    if (targetIdx < 0 || targetIdx >= PARTY_ROSTER.length) return;
+    const tempSlot = PARTY_ROSTER[idx].slot;
+    PARTY_ROSTER[idx].slot = PARTY_ROSTER[targetIdx].slot;
+    PARTY_ROSTER[targetIdx].slot = tempSlot;
+    renderTacticianDesk();
+  }
+
+  // Persistent DOM Slot Initialization for Top 35% Diorama (Zero innerHTML thrashing during 0ms scrub)
+  function initDioramaDOMSlots() {
+    const allyGrid = document.getElementById('dioramaAllyGrid');
+    const enemyGrid = document.getElementById('dioramaEnemyGrid');
+    allyGrid.innerHTML = '';
+    enemyGrid.innerHTML = '';
+
+    // Ally Grid: Slot 6 -> Slot 1 (Left to Right)
+    for (let s = 6; s >= 1; s--) {
+      allyGrid.appendChild(createDioramaSlotDOM('ally', s));
+    }
+    // Enemy Grid: Slot 1 -> Slot 6 (Left to Right)
+    for (let s = 1; s <= 6; s++) {
+      enemyGrid.appendChild(createDioramaSlotDOM('enemy', s));
+    }
+  }
+
+  function createDioramaSlotDOM(side, slotNum) {
+    const el = document.createElement('div');
+    el.className = 'diorama-slot-card';
+    el.id = `diorama_${side}_slot_${slotNum}`;
+    el.innerHTML = `
+      <div class="slot-header-strip">
+        <span style="font-weight:800;color:var(--brass);">格位 ${slotNum}</span>
+        <span class="uplink-badge" id="uplink_${side}_${slotNum}">🔊0d</span>
+      </div>
+      <div class="diorama-bone-portrait" id="portrait_${side}_${slotNum}">
+        <span class="status-pill-overlay" id="status_${side}_${slotNum}" style="display:none;">瀕死</span>
+        <div class="bone-name-overlay" id="name_${side}_${slotNum}">—</div>
+      </div>
+      <div class="micro-bar-wrap">
+        <div class="micro-bar"><div class="fill-hp" id="hpbar_${side}_${slotNum}" style="width:100%"></div></div>
+        <div class="micro-bar"><div class="fill-stm" id="stmbar_${side}_${slotNum}" style="width:100%"></div></div>
+      </div>
+      <div class="flesh-chassis-box">
+        <div class="flesh-row">
+          <span id="fleshname_${side}_${slotNum}">兵團</span>
+          <span id="fleshhp_${side}_${slotNum}">100%</span>
+        </div>
+        <div class="micro-bar" style="margin-top:2px;"><div class="fill-flesh" id="fleshbar_${side}_${slotNum}" style="width:100%"></div></div>
+      </div>
+    `;
+    return el;
+  }
+
+  // 0ms Scrubbing State Applicator
+  function applySnapshotToDiorama(snapId) {
+    const snap = SNAPSHOT_TIMELINE[snapId];
+    if (!snap) return;
+
+    document.getElementById('dioramaNodeLabel').textContent = `📍 ${snap.nodeTitle}`;
+    document.getElementById('dioramaSnapshotInfo').textContent = `[快照 #${snap.id}] ${snap.headline}`;
+
+    updateSideSlotsDOM('ally', snap.allies, snap.actorId, snap.targetId);
+    updateSideSlotsDOM('enemy', snap.enemies, snap.actorId, snap.targetId);
+    renderDioramaVectorSVG(snap);
+
+    // LIFO Depth >= 2 Diagonal Manga Eye-Line Cut-In
+    const cutInOverlay = document.getElementById('lifoCutInOverlay');
+    if (snap.lifoDepth >= 2 && snap.cutInUnitId) {
+      const cfg = ASSET_REGISTRY[snap.cutInUnitId] || ASSET_REGISTRY.ally_1;
+      const artEl = document.getElementById('lifoCutInArt');
+      artEl.style.setProperty('--cutin-url', `url("${cfg.dataUrl}")`);
+      artEl.style.setProperty('--cutin-x', cfg.focalX + '%');
+      artEl.style.setProperty('--cutin-y', cfg.focalY + '%');
+      artEl.style.setProperty('--cutin-zoom', String(cfg.zoom || 1.15));
+      document.getElementById('lifoCutInTag').textContent = snap.cutInTitle;
+      document.getElementById('lifoCutInText').textContent = snap.cutInText;
+      cutInOverlay.classList.add('visible');
+    } else {
+      cutInOverlay.classList.remove('visible');
+    }
+
+    renderLiveEnemyForensics(snap);
+  }
+
+  function updateSideSlotsDOM(side, units, actorId, targetId) {
+    for (let s = 1; s <= 6; s++) {
+      const unit = units.find(u => u.slot === s);
+      const cardEl = document.getElementById(`diorama_${side}_slot_${s}`);
+      const portEl = document.getElementById(`portrait_${side}_${s}`);
+      if (!unit || !cardEl) continue;
+
+      cardEl.classList.toggle('active-actor', unit.id === actorId);
+      cardEl.classList.toggle('active-target', unit.id === targetId);
+      cardEl.classList.toggle('bleeding-out-slot', !!unit.bleedingOut);
+
+      applyArtVariablesToElement(portEl, unit.id);
+
+      // Reactive CSS Shaders (Mana Glow, Exhaustion, Bleeding Out)
+      portEl.classList.toggle('shader-mana-glow', (unit.mana / Math.max(1, unit.maxMana)) >= 0.65);
+      portEl.classList.toggle('shader-exhausted', (unit.stm / Math.max(1, unit.maxStm)) < 0.35 && !unit.bleedingOut);
+      portEl.classList.toggle('shader-bleeding', !!unit.bleedingOut);
+
+      document.getElementById(`name_${side}_${s}`).textContent = unit.name;
+      const statusEl = document.getElementById(`status_${side}_${s}`);
+      if (unit.bleedingOut) {
+        statusEl.style.display = 'block';
+        statusEl.textContent = '🩸瀕死後撤';
+      } else if (s === 1) {
+        statusEl.style.display = 'block';
+        statusEl.style.background = 'rgba(212, 175, 55, 0.88)';
+        statusEl.style.color = '#000';
+        statusEl.textContent = '⚔前鋒阻塞';
+      } else {
+        statusEl.style.display = 'none';
+      }
+
+      document.getElementById(`uplink_${side}_${s}`).textContent = unit.bleedingOut ? '⚡斷鏈' : `🔊${s - 1}d`;
+      document.getElementById(`hpbar_${side}_${s}`).style.width = Math.max(0, Math.min(100, (unit.hp / unit.maxHp) * 100)) + '%';
+      document.getElementById(`stmbar_${side}_${s}`).style.width = Math.max(0, Math.min(100, (unit.stm / unit.maxStm) * 100)) + '%';
+      document.getElementById(`fleshname_${side}_${s}`).textContent = unit.fleshName;
+      const fleshPct = Math.round(Math.max(0, (unit.fleshHp / unit.fleshMax) * 100));
+      document.getElementById(`fleshhp_${side}_${s}`).textContent = fleshPct + '%';
+      document.getElementById(`fleshbar_${side}_${s}`).style.width = fleshPct + '%';
+    }
+  }
+
+  function renderDioramaVectorSVG(snap) {
+    const svg = document.getElementById('dioramaSvgOverlay');
+    if (!snap.actorId || !snap.targetId) {
+      svg.innerHTML = '';
+      return;
+    }
+    const allUnits = [...snap.allies.map(u => ({ ...u, side: 'ally' })), ...snap.enemies.map(u => ({ ...u, side: 'enemy' }))];
+    const actor = allUnits.find(u => u.id === snap.actorId);
+    const target = allUnits.find(u => u.id === snap.targetId);
+    if (!actor || !target) { svg.innerHTML = ''; return; }
+
+    const getSlotX = (side, slot) => {
+      if (side === 'ally') return ((6 - slot) + 0.5) * (570 / 6);
+      return 630 + ((slot - 1) + 0.5) * (570 / 6);
+    };
+    const x1 = getSlotX(actor.side, actor.slot);
+    const x2 = getSlotX(target.side, target.slot);
+    const color = snap.vectorType === 'rule' ? '#38bdf8' : (snap.vectorType === 'chemical' ? '#10b981' : '#f43f5e');
+
+    svg.innerHTML = `
+      <path d="M ${x1} 115 Q ${(x1 + x2) / 2} 32 ${x2} 115" fill="none" stroke="${color}" stroke-width="4" stroke-dasharray="${snap.lifoDepth >= 2 ? '8,4' : 'none'}" />
+      <circle cx="${x2}" cy="115" r="9" fill="${color}" opacity="0.75" />
+    `;
+  }
+
+  // Render Expandable 1-Line Battle Summaries & Right-Edge Bookmark Rail
+  function renderLogAndBookmarks() {
+    const stream = document.getElementById('logStream');
+    const rail = document.getElementById('bookmarkRail');
+    stream.innerHTML = '';
+    rail.innerHTML = '';
+    document.getElementById('logStatsLabel').textContent = `共 ${SNAPSHOT_TIMELINE.length} 個狀態快照 (懸停即刻回溯)`;
+
+    MACRO_TIMELINE_ITEMS.forEach(item => {
+      if (item.kind === 'macro') {
+        const row = document.createElement('div');
+        row.className = 'log-macro-row';
+        row.innerHTML = `<span>${item.text}</span><span style="font-size:10px;color:var(--cyan);">快照 #${item.snapId}</span>`;
+        row.onpointerenter = () => applySnapshotToDiorama(item.snapId);
+        row.onclick = () => applySnapshotToDiorama(item.snapId);
+        stream.appendChild(row);
+      } else if (item.kind === 'battle') {
+        const b = item.battle;
+        const wrap = document.createElement('div');
+        const header = document.createElement('div');
+        header.className = 'log-battle-summary';
+        header.id = `battleSummaryHeader_${b.battleIdx}`;
+        header.innerHTML = `
+          <span id="battleToggleIcon_${b.battleIdx}">▶ 展開戰鬥 (${b.stepCount} 行微步) — ${b.summaryText}</span>
+          <span style="font-size:10px;color:var(--amber);">點擊展開 / 懸停預覽結果</span>
+        `;
+        header.onpointerenter = () => applySnapshotToDiorama(b.summarySnapId);
+        header.onclick = () => toggleBattleExpand(b.battleIdx);
+
+        const stepsBox = document.createElement('div');
+        stepsBox.className = 'battle-steps-container';
+        stepsBox.id = `battleStepsBox_${b.battleIdx}`;
+
+        b.microSteps.forEach(step => {
+          const line = document.createElement('div');
+          line.className = `log-micro-line ${step.type === 'lifo' ? 'lifo-line' : (step.type === 'gravity' ? 'gravity-line' : '')}`;
+          line.id = `logLineSnap_${step.snapId}`;
+          line.innerHTML = `<span style="color:var(--text-2);font-size:10px;">#${step.snapId}</span><span>${step.text}</span>`;
+          line.onpointerenter = () => applySnapshotToDiorama(step.snapId);
+          line.onclick = () => applySnapshotToDiorama(step.snapId);
+          stepsBox.appendChild(line);
+        });
+
+        wrap.appendChild(header);
+        wrap.appendChild(stepsBox);
+        stream.appendChild(wrap);
+      }
+    });
+
+    const totalSnaps = Math.max(1, SNAPSHOT_TIMELINE.length - 1);
+    BOOKMARK_TICKS.forEach(tick => {
+      const el = document.createElement('div');
+      el.className = `bookmark-tick ${tick.type}`;
+      el.style.top = Math.min(96, Math.max(2, (tick.snapId / totalSnaps) * 95)) + '%';
+      el.title = `[快照 #${tick.snapId}] ${tick.label}`;
+      el.onclick = () => {
+        if (tick.battleIdx !== null && tick.battleIdx !== undefined) {
+          toggleBattleExpand(tick.battleIdx, true);
+        }
+        applySnapshotToDiorama(tick.snapId);
+        const lineEl = document.getElementById(`logLineSnap_${tick.snapId}`);
+        if (lineEl) lineEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      };
+      rail.appendChild(el);
+    });
+  }
+
+  function toggleBattleExpand(battleIdx, forceOpen) {
+    const box = document.getElementById(`battleStepsBox_${battleIdx}`);
+    const icon = document.getElementById(`battleToggleIcon_${battleIdx}`);
+    if (!box) return;
+    const isExpanded = forceOpen !== undefined ? forceOpen : !box.classList.contains('expanded');
+    box.classList.toggle('expanded', isExpanded);
+    if (icon) {
+      icon.textContent = icon.textContent.replace(isExpanded ? '▶ 展開戰鬥' : '▼ 收合戰鬥', isExpanded ? '▼ 收合戰鬥' : '▶ 展開戰鬥');
+    }
+  }
+
+  function renderLiveEnemyForensics(snap) {
+    const box = document.getElementById('forensicsScroll');
+    box.innerHTML = '';
+    ENEMY_TEMPLATES.forEach(enemy => {
+      const isRevealed = snap.forensicReveals.includes(enemy.id);
+      const card = document.createElement('div');
+      card.className = 'forensic-enemy-card';
+      card.innerHTML = `
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px;">
+          <strong style="color:${isRevealed ? 'var(--brass)' : 'var(--text-2)'};">${enemy.name} (${enemy.role})</strong>
+          <span style="font-size:10px;color:${isRevealed ? 'var(--emerald)' : 'var(--text-2)'};">${isRevealed ? '🔒 Tier 2 完全破譯' : '⏳ 尚未交鋒觀測'}</span>
+        </div>
+        ${isRevealed ? `
+          <div class="plate-sockets">
+            <span class="socket-tag socket-when">WHEN: ${enemy.when}</span>
+            <span class="socket-tag socket-and">AND: ${enemy.and}</span>
+            <span class="socket-tag socket-do">DO: ${enemy.do}</span>
+          </div>
+        ` : `<div style="font-size:10px;color:var(--text-2);">隨日誌游標推進至該敵人出手回合後，自動逆向填入戰術板...</div>`}
+      `;
+      box.appendChild(card);
+    });
+  }
+
+  // ==================== BGM2 FRAMING & 2D EYE-LINE CALIBRATOR MODAL LOGIC ====================
+  function openBgm2Modal(unitId) {
+    activeModalUnitId = unitId;
+    const unit = PARTY_ROSTER.find(u => u.id === unitId);
+    const currentCfg = ASSET_REGISTRY[unitId] || ASSET_REGISTRY.ally_0;
+    tempModalConfig = { ...currentCfg };
+
+    document.getElementById('modalUnitTitle').textContent = `🎨 冒險者立繪與 2D 視線切線校準 — ${unit ? unit.name : unitId}`;
+    document.getElementById('prevDioramaName').textContent = unit ? unit.name : unitId;
+    document.getElementById('prevCutInCaption').textContent = `${unit ? unit.name : ''} — 【零時差反擊】！`;
+    document.getElementById('calibZoomSlider').value = tempModalConfig.zoom || 1.15;
+
+    refreshModalPreviewUI();
+    document.getElementById('bgm2FramingModal').classList.add('open');
+  }
+
+  async function openBgm2ModalWithFile(unitId, file) {
+    openBgm2Modal(unitId);
+    const normalizedUrl = await normalizeAndDecodeImage(file);
+    tempModalConfig.dataUrl = normalizedUrl;
+    tempModalConfig.isCustom = true;
+    refreshModalPreviewUI();
+  }
+
+  function closeBgm2Modal() {
+    document.getElementById('bgm2FramingModal').classList.remove('open');
+  }
+
+  async function handleModalFileSelect(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const normalizedUrl = await normalizeAndDecodeImage(file);
+    tempModalConfig.dataUrl = normalizedUrl;
+    tempModalConfig.isCustom = true;
+    refreshModalPreviewUI();
+    event.target.value = '';
+  }
+
+  function startCrosshairDrag(e) {
+    isDraggingCrosshair = true;
+    updateCrosshairFromPointer(e);
+  }
+  function moveCrosshairDrag(e) {
+    if (!isDraggingCrosshair) return;
+    updateCrosshairFromPointer(e);
+  }
+  function endCrosshairDrag() {
+    isDraggingCrosshair = false;
+  }
+
+  function updateCrosshairFromPointer(e) {
+    const stage = document.getElementById('calibratorStage');
+    const rect = stage.getBoundingClientRect();
+    const xPct = Math.round(Math.max(5, Math.min(95, ((e.clientX - rect.left) / rect.width) * 100)));
+    const yPct = Math.round(Math.max(5, Math.min(95, ((e.clientY - rect.top) / rect.height) * 100)));
+    tempModalConfig.focalX = xPct;
+    tempModalConfig.focalY = yPct;
+    refreshModalPreviewUI();
+  }
+
+  function updateCalibZoom(val) {
+    tempModalConfig.zoom = parseFloat(val);
+    refreshModalPreviewUI();
+  }
+
+  function setPreviewShader(shaderCls) {
+    previewShaderClass = shaderCls;
+    refreshModalPreviewUI();
+  }
+
+  function refreshModalPreviewUI() {
+    if (!tempModalConfig) return;
+    const safeUrl = `url("${tempModalConfig.dataUrl}")`;
+    const stage = document.getElementById('calibratorStage');
+    stage.style.setProperty('--calib-url', safeUrl);
+
+    const band = document.getElementById('calibEyelineBand');
+    const cross = document.getElementById('calibCrosshair');
+    band.style.top = tempModalConfig.focalY + '%';
+    cross.style.left = tempModalConfig.focalX + '%';
+    cross.style.top = tempModalConfig.focalY + '%';
+
+    document.getElementById('calibCoordLabel').textContent = `X: ${tempModalConfig.focalX}% , Y: ${tempModalConfig.focalY}%`;
+    document.getElementById('calibZoomLabel').textContent = `${Number(tempModalConfig.zoom).toFixed(2)}x`;
+
+    // View 1: 3:4 Desk Card
+    const prevDesk = document.getElementById('prevDeskCard');
+    prevDesk.style.setProperty('--portrait-url', safeUrl);
+    prevDesk.style.setProperty('--focal-x', tempModalConfig.focalX + '%');
+    prevDesk.style.setProperty('--focal-y', tempModalConfig.focalY + '%');
+    prevDesk.style.setProperty('--focal-zoom', String(tempModalConfig.zoom));
+
+    // View 2: 1x6 Diorama Card
+    const prevDio = document.getElementById('prevDioramaCard');
+    prevDio.className = 'diorama-bone-portrait ' + previewShaderClass;
+    prevDio.style.setProperty('--portrait-url', safeUrl);
+    prevDio.style.setProperty('--focal-x', tempModalConfig.focalX + '%');
+    prevDio.style.setProperty('--focal-y', tempModalConfig.focalY + '%');
+    prevDio.style.setProperty('--focal-zoom', String(tempModalConfig.zoom));
+
+    // View 3: LIFO Depth >= 2 Cut-In Strip
+    const prevCut = document.getElementById('prevCutInArt');
+    prevCut.style.setProperty('--cutin-url', safeUrl);
+    prevCut.style.setProperty('--cutin-x', tempModalConfig.focalX + '%');
+    prevCut.style.setProperty('--cutin-y', tempModalConfig.focalY + '%');
+    prevCut.style.setProperty('--cutin-zoom', String(tempModalConfig.zoom));
+  }
+
+  async function saveAndApplyModalArt() {
+    if (!tempModalConfig) return;
+    ASSET_REGISTRY[activeModalUnitId] = { ...tempModalConfig };
+    await saveUnitPortraitToDB(ASSET_REGISTRY[activeModalUnitId]);
+    renderTacticianDesk();
+    if (SNAPSHOT_TIMELINE.length > 0) {
+      applySnapshotToDiorama(0);
+    }
+    closeBgm2Modal();
+  }
+
+  async function resetCurrentUnitArt() {
+    const defUrl = DEFAULT_SILHOUETTES[activeModalUnitId] || DEFAULT_SILHOUETTES.ally_0;
+    tempModalConfig = {
+      unitId: activeModalUnitId,
+      dataUrl: defUrl,
+      focalX: 50,
+      focalY: 24,
+      zoom: 1.15,
+      isCustom: false
+    };
+    await deleteUnitPortraitFromDB(activeModalUnitId);
+    ASSET_REGISTRY[activeModalUnitId] = { ...tempModalConfig };
+    refreshModalPreviewUI();
+    renderTacticianDesk();
+  }
+
+  // 1-Click Portable JSON Art Pack Export / Import
+  function exportArtPackJson() {
+    const pack = {};
+    Object.keys(ASSET_REGISTRY).forEach(k => {
+      if (k.startsWith('ally_')) pack[k] = ASSET_REGISTRY[k];
+    });
+    const blob = new Blob([JSON.stringify(pack, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'elysion-art-pack-v252.json';
+    a.click();
+  }
+
+  function importArtPackJson(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      try {
+        const pack = JSON.parse(e.target.result);
+        for (const k of Object.keys(pack)) {
+          if (pack[k] && pack[k].dataUrl) {
+            ASSET_REGISTRY[k] = pack[k];
+            await saveUnitPortraitToDB(pack[k]);
+          }
+        }
+        renderTacticianDesk();
+        if (SNAPSHOT_TIMELINE.length > 0) applySnapshotToDiorama(0);
+      } catch (_) {}
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  // Boot Sequence
+  window.addEventListener('DOMContentLoaded', async () => {
+    initDioramaDOMSlots();
+    await loadStoredPortraitsFromDB();
+    renderTacticianDesk();
+    dispatchContinuousExpedition();
+    switchMainTab('desk');
+  });
+</script>
+</body>
+</html>
