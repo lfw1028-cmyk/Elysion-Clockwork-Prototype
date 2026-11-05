@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Elysion Clockwork v2.6 — 古籍羊皮手稿・6v6序數引力・法術掠奪垂直切片</title>
+<style>
+  :root {
+    --parchment-light: #efe4ce;
+    --parchment-base: #e3d3b6;
+    --parchment-dark: #cbb48e;
+    --parchment-deep: #b39970;
+    --walnut-dark: #2a1d15;
+    --walnut-mid: #422f22;
+    --ink-black: #1e1610;
+    --ink-brown: #3b2c20;
+    --ink-faded: #695441;
+    --wax-red: #7c1d1d;
+    --wax-bright: #9e2a2b;
+    --ochre-gold: #8c6218;
+    --copper-verdigris: #2d5a4c;
+    --cobalt-ink: #233d54;
+
+    /* Live Morph Controller Variables */
+    --diorama-height: 36vh;
+    --ink-stroke: 1.5px;
+    --vignette-alpha: 0.38;
+    --paper-sepia: 18%;
+    --card-gap: 6px;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--parchment-base);
+    color: var(--ink-black);
+    font-family: "PMingLiU", "Noto Serif TC", "Songti TC", Georgia, serif;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    filter: sepia(var(--paper-sepia));
+    position: relative;
+    user-select: none;
+  }
+
+  /* Aged Parchment Vignette & Grain Overlay */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 900;
+    background:
+      radial-gradient(circle at center, transparent 52%, rgba(32, 20, 10, var(--vignette-alpha)) 100%),
+      repeating-linear-gradient(0deg, rgba(40,25,12,0.018) 0px, rgba(40,25,12,0.018) 1px, transparent 1px, transparent 3px);
+  }
+
+  .ink-frame {
+    border: var(--ink-stroke) solid var(--ink-black);
+    background: var(--parchment-light);
+    box-shadow: inset 0 0 0 2px var(--parchment-base), inset 0 0 0 3px var(--ink-brown);
+  }
+
+  .svg-quill {
+    filter: url(#manuscript-ink);
+  }
+
+  /* Top Command Header */
+  header.manuscript-header {
+    height: 44px;
+    background: var(--walnut-dark);
+    color: var(--parchment-light);
+    border-bottom: 2px solid var(--ink-black);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    flex-shrink: 0;
+    z-index: 20;
+  }
+
+  .brand-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 15px;
+  }
+
+  .brand-sub {
+    font-size: 11px;
+    color: var(--parchment-dark);
+    font-family: Consolas, monospace;
+    border-left: 1px solid var(--parchment-deep);
+    padding-left: 8px;
+  }
+
+  .header-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .ms-btn {
+    background: var(--parchment-base);
+    color: var(--ink-black);
+    border: var(--ink-stroke) solid var(--ink-black);
+    padding: 4px 11px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    box-shadow: 2px 2px 0 var(--ink-black);
+    transition: transform 0.06s, background 0.1s;
+  }
+
+  .ms-btn:hover {
+    background: var(--parchment-light);
+  }
+
+  .ms-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow
